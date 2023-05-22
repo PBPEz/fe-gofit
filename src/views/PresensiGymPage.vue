@@ -35,7 +35,7 @@
                         <v-data-table :headers="headers" :items="bookingGym" :search="search" :loading="load"
                             loading-text="Sedang mengambil data" no-data-text="Tidak ada Data">
                             <template v-slot:[`item.actions`]="{ item }">
-                                <v-btn color="error" class="mr-2" @click="dialog = true">
+                                <v-btn color="error" class="mr-2" @click="printStruk(item)">
                                     <v-icon>
                                         mdi-printer-pos-check
                                     </v-icon>
@@ -70,12 +70,11 @@
 </template>
   
 <script>
+import { jsPDF } from "jspdf";
 export default {
     data() {
         return {
-            deleteId: "",
             editId: "",
-            inputType: "Tambah",
             search: null,
             load: false,
             snackbar: false,
@@ -87,18 +86,6 @@ export default {
             dialogConfirmEdit: false,
             form: {
                 jam_presensi: "",
-            },
-            error: {
-                nama_member: [(v) => !!v || "Field required"],
-                nomor_telepon: [(v) => !!v || "Field required"],
-                alamat: [(v) => !!v || "Field required"],
-                deposit: [(v) => !!v || "Field required"],
-                tanggal_lahir: [(v) => !!v || "Field required"],
-                status: [(v) => !!v || "Field required"],
-                gender: [(v) => !!v || "Field required"],
-                email: [(v) => !!v || "Field required"],
-                username: [(v) => !!v || "Field required"],
-                password: [(v) => !!v || "Field required"],
             },
             statusAktif: [
                 {
@@ -203,6 +190,20 @@ export default {
                     this.load = false;
                 });
         },
+        printStruk(item){
+            this.editId = item.id;
+
+            const doc = new jsPDF();
+
+            doc.text("Gofit",10,10);
+            doc.text("Jl.Centralpark No.10 Yogyakarta",10,20);
+            doc.text("STRUK PRESENSI KELAS",10,30);
+            doc.text(`Nomor Struk   : ${item.id}`,10,50);
+            doc.text(`Tanggal           : ${item.tanggal} ${item.jam_booking}`,10,60);
+            doc.text(`Member        : ${item.id_member} / ${item.nama_member}`,10,80);
+            doc.text(`Sesi              : ${item.sesi}`,10,90);
+            doc.save("gofit.pdf")
+        },
         presensiGym(editId) {
             var url = this.$api + "/bookingGym/" + editId;
             this.load = true;
@@ -277,45 +278,6 @@ export default {
             this.dialogConfirm = false;
             this.dialogConfirmEdit = false;
             this.getDataMember();
-        },
-        resetPassword(item) {
-            let newData = {
-                nama_member: item.nama_member,
-                nomor_telepon: item.nomor_telepon,
-                deposit_uang: item.deposit_uang,
-                depost_kelas: item.deposit_kelas,
-                tanggal_lahir: item.tanggal_lahir,
-                status: item.status,
-                email: item.email,
-                gender: item.gender,
-                username: item.username,
-                password: item.password,
-            };
-            var url = this.$api + "/member/" + item.id;
-            this.load = true;
-            this.$http
-                .put(url, newData, {
-                    headers: {
-                        Authorization: "Bearer " + localStorage.getItem("token"),
-                    },
-                })
-                .then(() => {
-                    this.error_message = "Berhasil memperbarui password";
-                    this.color = "green";
-                    this.snackbar = true;
-                    this.load = false;
-                    this.close();
-                    this.getDataMember();
-                    this.resetForm();
-                    this.inputType = "Tambah";
-                })
-                .catch(() => {
-                    this.error_message = "Silahkan periksa kembali";
-                    this.color = "red";
-                    this.dialogConfirmEdit = false;
-                    this.snackbar = true;
-                    this.load = false;
-                });
         },
         deleteHandler(id) {
             this.deleteId = id;
