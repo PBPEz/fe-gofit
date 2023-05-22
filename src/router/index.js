@@ -21,28 +21,40 @@ const router = new VueRouter({
       path: '/',
         component: importViewComponent('DashboardLayout'),
         children: [
-            //Dashboard
+            //Kasir
             {
-                path: '/dashboard',
-                name: 'dashboard',
-                meta: {title : 'dashboard'},
-                component: importViewComponent('DashboardPegawaiPage'),
+                path: '/kasir',
+                name: 'kasir',
+                meta: {title : 'kasir'},
+                component: importViewComponent('KasirPage'),
             },
-            //jadwal
+            //MO
             {
-              path: '/jadwal',
-              name: 'jadwal',
-              meta: {title : 'jadwal'},
-              component: importViewComponent('JadwalInstrukturPage'),
+              path: '/mo',
+              name: 'mo',
+              meta: {title : 'mo'},
+              component: importViewComponent('MOPage'),
             },
-            //instruktur
+            //Admin
             {
-              path: '/instruktur',
-              name: 'instruktur',
-              meta: {title : 'instruktur'},
-              component: importViewComponent('InstrukturPage'),
+              path: '/admin',
+              name: 'admin',
+              meta: {title : 'admin'},
+              component: importViewComponent('AdminPage'),
             },
-            //pegawai
+            //Aktivasi
+            {
+              path: '/aktivasiMember',
+              name: 'aktivasi member',
+              meta: {title: 'aktivasi member'},
+              component: importViewComponent('AktivasiMemberPage')
+            },
+            {
+              path: '/presensiGym',
+              name: 'presensi gym',
+              meta: {title: 'presensi gym'},
+              component: importViewComponent('PresensiGymPage')
+            }
           ]
     },
     {

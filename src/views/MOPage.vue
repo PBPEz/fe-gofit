@@ -1,17 +1,17 @@
 <template>
   <v-main>
     <v-card class="overflow-hidden">
-      <v-app-bar absolute color="#6A76AB" dark shrink-on-scroll prominent src="https://picsum.photos/1920/1080?random"
+      <v-app-bar absolute color="#6A76AB" dark shrink-on-scroll prominent src="http://3.bp.blogspot.com/-NMvk7UyW_n8/UnhA_jPAmjI/AAAAAAAAARg/hCF2s23vRN0/s1600/urlwewe.gif"
         fade-img-on-scroll scroll-target="#scrolling-techniques-3">
         <template v-slot:img="{ props }">
           <v-img v-bind="props" gradient="to top right, rgba(100,115,201,.7), rgba(25,32,72,.7)"></v-img>
         </template>
         <template v-slot:extension>
           <v-tabs align-with-title>
-            <v-tab href="/dashboard" active>Member</v-tab>
+            <v-tab href="/jadwal">Jadwal</v-tab>
             <v-tab href="/instruktur" disabled>Instruktur</v-tab>
-            <v-tab href="/jadwal" disabled>Jadwal</v-tab>
-            <v-tab @click="btnLogout">Logout</v-tab>
+            <v-tab href="/dashboard" disabled>Member</v-tab>
+            <v-tab href="/login">Logout</v-tab>
           </v-tabs>
         </template>
       </v-app-bar>
@@ -42,7 +42,7 @@
             </div>
           </v-card>
           <v-card style="margin-top: 20px">
-            <v-data-table :headers="headers" :items="members" :search="search" :loading="load"
+            <v-data-table :headers="headers" :items="kelass" :datas="kelass" :search="search" :loading="load"
               loading-text="Sedang mengambil data" no-data-text="Tidak ada Data">
               <template v-slot:[`item.actions`]="{ item }">
                 <v-btn color="success" class="mr-2" @click="editHandler(item)">
@@ -144,37 +144,25 @@ export default {
       search: null,
       load: false,
       snackbar: false,
-      members: [],
-      member: new FormData(),
+      jadwal_umums: [],
+      kelass: [],
+      jadwal_umum: new FormData(),
       error_message: "",
       dialog: false,
       color: "",
       dialogConfirm: false,
       dialogConfirmEdit: false,
       form: {
-        nama_member: "",
-        nomor_telepon: "",
-        alamat: "",
-        deposit_uang: "",
-        deposit_kelas: "",
-        tanggal_lahir: "",
-        status: "",
-        gender: "",
-        email: "",
-        username: "",
-        password: "",
+        id_kelas: "",
+        tanggal: "",
+        hari: "",
+        sesi: "",
       },
       error: {
-        nama_member: [(v) => !!v || "Field required"],
-        nomor_telepon: [(v) => !!v || "Field required"],
-        alamat: [(v) => !!v || "Field required"],
-        deposit: [(v) => !!v || "Field required"],
-        tanggal_lahir: [(v) => !!v || "Field required"],
-        status: [(v) => !!v || "Field required"],
-        gender: [(v) => !!v || "Field required"],
-        email: [(v) => !!v || "Field required"],
-        username: [(v) => !!v || "Field required"],
-        password: [(v) => !!v || "Field required"],
+        id_kelas: [(v) => !!v || "Field required"],
+        tanggal: [(v) => !!v || "Field required"],
+        hari: [(v) => !!v || "Field required"],
+        sesi: [(v) => !!v || "Field required"],
       },
       statusAktif: [
         {
@@ -192,38 +180,38 @@ export default {
           disabled: true,
         },
         {
-          text: "Member",
+          text: "Jadwal",
           disabled: false,
         },
       ],
       headers: [
         {
-          text: "Nomor Member",
-          value: "id",
+          text: "Senin",
+          value: "nama_kelas",
         },
         {
-          text: "Nama Member",
-          value: "nama_member",
+          text: "Selasa",
+          value: "nama_kelas",
         },
         {
-          text: "Tanggal Lahir",
-          value: "tanggal_lahir",
+          text: "Rabu",
+          value: "nama_kelas",
         },
         {
-          text: "Nomor Telepon",
-          value: "nomor_telepon",
+          text: "Kamis",
+          value: "nama_kelas",
         },
         {
-          text: "Deposit Uang",
-          value: "deposit_uang",
+          text: "Jumat",
+          value: "nama_kelas",
         },
         {
-          text: "Deposit Kelas",
-          value: "deposit_kelas",
+          text: "Sabtu",
+          value: "nama_kelas",
         },
         {
-          text: "Email",
-          value: "email",
+          text: "Minggu",
+          value: "nama_kelas",
         },
         {
           text: "Action",
@@ -239,19 +227,19 @@ export default {
     },
   },
   mounted() {
-    this.getDataMember();
+    this.getDataJadwalUmum();
   },
   methods: {
     setForm() {
       if (this.inputType !== "Tambah") {
-        this.updateMember();
+        this.updateJadwalUmum();
       } else {
-        this.submitMember();
+        this.submitJadwalUmum();
       }
     },
-    getDataMember() {
+    getDataJadwalUmum() {
       this.load = true;
-      var url = this.$api + "/member";
+      var url = this.$api + "/jadwal";
       this.$http
         .get(url, {
           headers: {
@@ -259,27 +247,22 @@ export default {
           },
         })
         .then((response) => {
-          this.members = response.data.data;
+          this.jadwal_umums = response.data.data;
+          this.kelass = response.data.kelas;
           this.load = false;
         });
       this.load = true;
     },
-    submitMember() {
-      this.member.append("nama_member", this.form.nama_member);
-      this.member.append("nomor_telepon", this.form.nomor_telepon);
-      this.member.append("deposit_uang", this.form.deposit_uang);
-      this.member.append("deposit_kelas", this.form.deposit_kelas);
-      this.member.append("email", this.form.email);
-      this.member.append("username", this.form.username);
-      this.member.append("password", this.form.password);
-      this.member.append("tanggal_lahir", this.form.tanggal_lahir);
-      this.member.append("status", this.form.status);
-      this.member.append("gender", this.form.gender);
+    submitJadwalUmum() {
+      this.jadwal_umum.append("id_kelas", this.form.id_kelas);
+      this.jadwal_umum.append("tanggal", this.form.tanggal);
+      this.jadwal_umum.append("hari", this.form.hari);
+      this.jadwal_umum.append("sesi", this.form.sesi);
 
-      var url = this.$api + "/member";
+      var url = this.$api + "/jadwal";
       this.load = true;
       this.$http
-        .post(url, this.member, {
+        .post(url, this.jadwal_umum, {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),
           },
@@ -290,31 +273,25 @@ export default {
           this.snackbar = true;
           this.load = true;
           this.close();
-          this.getDataMember();
+          this.getDataJadwalUmum();
           this.resetForm();
         })
         .catch(() => {
-          this.error_message = "Tambah Member gagal!";
+          this.error_message = "Tambah Jadwal Umum gagal!";
           this.color = "red";
           this.dialogConfirmEdit = false;
           this.snackbar = true;
           this.load = false;
         });
     },
-    updateMember() {
+    updateJadwalUmum() {
       let newData = {
-        nama_member: this.form.nama_member,
-        nomor_telepon: this.form.nomor_telepon,
-        deposit_uang: this.form.deposit_uang,
-        deposit_kelas: this.form.deposit_kelas,
-        tanggal_lahir: this.form.tanggal_lahir,
-        status: this.form.status,
-        email: this.form.email,
-        gender: this.form.gender,
-        username: this.form.username,
-        password: this.form.password,
+        id_kelas: this.form.id_kelas,
+        tanggal: this.form.tanggal,
+        hari: this.form.hari,
+        sesi: this.form.sesi,
       };
-      var url = this.$api + "/member/" + this.editId;
+      var url = this.$api + "/jadwal/" + this.editId;
       this.load = true;
       this.$http
         .put(url, newData, {
@@ -328,12 +305,12 @@ export default {
           this.snackbar = true;
           this.load = false;
           this.close();
-          this.getDataMember();
+          this.getDataJadwalUmum();
           this.resetForm();
           this.inputType = "Tambah";
         })
         .catch(() => {
-          this.error_message = "Update Member gagal!" + this.editId;
+          this.error_message = "Update Jadwal Umum gagal!" + this.editId;
           this.color = "red";
           this.dialogConfirmEdit = false;
           this.snackbar = true;
@@ -341,7 +318,7 @@ export default {
         });
     },
     deleteData() {
-      var url = this.$api + "/member/" + this.deleteId;
+      var url = this.$api + "/jadwal/" + this.deleteId;
       this.$http
         .delete(url, {
           headers: {
@@ -354,7 +331,7 @@ export default {
           this.snackbar = true;
           this.load = false;
           this.close();
-          this.getDataMember(); //mengambil data
+          this.getDataJadwalUmum(); //mengambil data
           this.resetForm();
           location.reload();
           this.inputType = "Tambah";
@@ -371,81 +348,31 @@ export default {
       this.dialogConfirmEdit = false;
       this.inputType = "Tambah";
       (this.error = {
-        nama_member: false,
-        no_telp: false,
-        alamat: false,
-        deposit: false,
-        masa_berlaku: false,
-        tgl_lahir: false,
-        status: false,
-        email_member: false,
-        username: false,
-        password: false,
+        id_kelas: false,
+        tanggal: false,
+        hari: false,
+        sesi: false,
       }),
         this.resetForm();
-      this.getDataMember();
+      this.getDataJadwalUmum();
     },
     close() {
       this.dialog = false;
       this.inputType = "Tambah";
       this.dialogConfirm = false;
       this.dialogConfirmEdit = false;
-      this.getDataMember();
+      this.getDataJadwalUmum();
     },
     editHandler(item) {
       this.inputType = "Ubah";
       this.editId = item.id;
-      this.form.nama_member = item.nama_member;
-      this.form.nomor_telepon = item.nomor_telepon;
-      this.form.deposit_uang = item.deposit_uang;
-      this.form.deposit_kelas = item.deposit_kelas;
-      this.form.email = item.email;
-      this.form.tanggal_lahir = item.tanggal_lahir;
-      this.form.status = item.status;
-      this.form.gender = item.gender;
-      this.form.username = item.username;
-      this.form.password = item.password;
+      this.form.id_kelas = item.id_kelas;
+      this.form.tanggal = item.tanggal;
+      this.form.hari = item.hari;
+      this.form.sesi = item.sesi;
       this.dialog = true;
     },
-    resetPassword(item) {
-      let newData = {
-        nama_member: item.nama_member,
-        nomor_telepon: item.nomor_telepon,
-        deposit_uang: item.deposit_uang,
-        depost_kelas: item.deposit_kelas,
-        tanggal_lahir: item.tanggal_lahir,
-        status: item.status,
-        email: item.email,
-        gender: item.gender,
-        username: item.username,
-        password: item.password,
-      };
-      var url = this.$api + "/member/" + item.id;
-      this.load = true;
-      this.$http
-        .put(url, newData, {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        })
-        .then(() => {
-          this.error_message = "Berhasil memperbarui password";
-          this.color = "green";
-          this.snackbar = true;
-          this.load = false;
-          this.close();
-          this.getDataMember();
-          this.resetForm();
-          this.inputType = "Tambah";
-        })
-        .catch(() => {
-          this.error_message = "Silahkan periksa kembali";
-          this.color = "red";
-          this.dialogConfirmEdit = false;
-          this.snackbar = true;
-          this.load = false;
-        });
-    },
+    
     deleteHandler(id) {
       this.deleteId = id;
       this.dialogConfirm = true;
@@ -463,13 +390,6 @@ export default {
         username: "",
         password: "",
       };
-    },
-    btnLogout() {
-      localStorage.removeItem("token");
-      localStorage.removeItem("id_pegawai");
-      localStorage.removeItem("nama_pegawai");
-      localStorage.removeItem("role");
-      this.$router.push("/");
     },
   },
 };

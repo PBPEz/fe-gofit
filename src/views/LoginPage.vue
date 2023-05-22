@@ -59,13 +59,13 @@ export default {
             localStorage.setItem("role", response.data.data.role);
 
             if(response.data.data.role == "MO"){
-              this.$router.push("/jadwal");
+              this.$router.push("/mo");
             }
             else if(response.data.data.role == "Kasir"){
-              this.$router.push("/dashboard")
+              this.$router.push("/kasir")
             }
             else if(response.data.data.role == "Admin"){
-              this.$router.push("/instruktur")
+              this.$router.push("/admin")
             }
 
             this.error_message = response.data.message;

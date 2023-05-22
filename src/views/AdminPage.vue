@@ -1,16 +1,16 @@
 <template>
   <v-main>
     <v-card class="overflow-hidden">
-      <v-app-bar absolute color="#6A76AB" dark shrink-on-scroll prominent src="https://picsum.photos/1920/1080?random"
+      <v-app-bar absolute color="#6A76AB" dark shrink-on-scroll prominent src="http://3.bp.blogspot.com/-NMvk7UyW_n8/UnhA_jPAmjI/AAAAAAAAARg/hCF2s23vRN0/s1600/urlwewe.gif"
         fade-img-on-scroll scroll-target="#scrolling-techniques-3">
         <template v-slot:img="{ props }">
           <v-img v-bind="props" gradient="to top right, rgba(100,115,201,.7), rgba(25,32,72,.7)"></v-img>
         </template>
         <template v-slot:extension>
           <v-tabs align-with-title>
-            <v-tab href="/jadwal">Jadwal</v-tab>
-            <v-tab href="/instruktur" disabled>Instruktur</v-tab>
+            <v-tab href="/instruktur">Instruktur</v-tab>
             <v-tab href="/dashboard" disabled>Member</v-tab>
+            <v-tab href="/jadwal" disabled>Jadwal</v-tab>
             <v-tab href="/login">Logout</v-tab>
           </v-tabs>
         </template>
@@ -42,7 +42,7 @@
             </div>
           </v-card>
           <v-card style="margin-top: 20px">
-            <v-data-table :headers="headers" :items="members" :search="search" :loading="load"
+            <v-data-table :headers="headers" :items="instrukturs" :search="search" :loading="load"
               loading-text="Sedang mengambil data" no-data-text="Tidak ada Data">
               <template v-slot:[`item.actions`]="{ item }">
                 <v-btn color="success" class="mr-2" @click="editHandler(item)">
@@ -61,32 +61,25 @@
             <v-card>
               <v-card-title>
                 <div :style="!$vuetify.breakpoint.mobile ? 'display: flex;' : ''" style="width: 100%">
-                  <span class="headline">{{ formTitle }} Member</span>
+                  <span class="headline">{{ formTitle }} Instruktur</span>
                 </div>
               </v-card-title>
               <hr />
               <v-card-text>
                 <v-container style="width: 1000px;">
-                  <v-text-field v-model="form.nama_member" label="Nama Member" required outlined
-                    :rules="error.nama_member"></v-text-field>
+                  <v-text-field v-model="form.nama_instruktur" label="Nama Instruktur" required outlined
+                    :rules="error.nama_instruktur"></v-text-field>
                   <v-text-field v-model="form.tanggal_lahir" label="Tanggal Lahir" required type="date" outlined
                     :rules="error.tgl_lahir"></v-text-field>
-                  <v-text-field v-model="form.email" label="Email" required outlined
-                    :rules="error.email_member"></v-text-field>
-                  <v-text-field v-model="form.deposit_uang" label="Deposit Uang" required outlined
-                    :rules="error.deposit"></v-text-field>
-                  <v-text-field v-model="form.deposit_kelas" label="Deposit Kelas" required outlined
-                    :rules="error.deposit"></v-text-field>
                   <v-text-field v-model="form.nomor_telepon" label="Nomor Telepon" required outlined
-                    :rules="error.no_telp"></v-text-field>
+                    :rules="error.nomor_telepon"></v-text-field>
+                  <v-text-field v-model="form.email" label="Email" required outlined :rules="error.email"></v-text-field>
+                  <v-text-field v-model="form.status" label="Status" required outlined
+                    :rules="error.status"></v-text-field>
                   <v-text-field v-model="form.gender" label="Gender" required outlined
-                    :rules="error.no_telp"></v-text-field>
-                  <v-select :items="statusAktif" v-model="form.status" label="Status " item-value="value" outlined
-                    :rules="error.status" item-text="text"></v-select>
-                  <v-text-field v-model="form.username" label="Username" required outlined :rules="error.username"
-                    disabled></v-text-field>
-                  <v-text-field v-model="form.password" label="Password" required outlined :rules="error.password"
-                    disabled></v-text-field>
+                    :rules="error.gender"></v-text-field>
+                  <v-text-field v-model="form.password" label="Password" required outlined
+                    :rules="error.password"></v-text-field>
                   <v-btn color="error" @click="cancel"> Batal </v-btn>
                   <v-btn style="margin-left: 15px" color="primary" @click="dialogConfirmEdit = true">
                     Simpan
@@ -144,36 +137,29 @@ export default {
       search: null,
       load: false,
       snackbar: false,
-      members: [],
-      member: new FormData(),
+      instrukturs: [],
+      instruktur: new FormData(),
       error_message: "",
       dialog: false,
       color: "",
       dialogConfirm: false,
       dialogConfirmEdit: false,
       form: {
-        nama_member: "",
-        nomor_telepon: "",
-        alamat: "",
-        deposit_uang: "",
-        deposit_kelas: "",
+        nama_instruktur: "",
         tanggal_lahir: "",
+        nomor_telepon: "",
+        email: "",
         status: "",
         gender: "",
-        email: "",
-        username: "",
         password: "",
       },
       error: {
-        nama_member: [(v) => !!v || "Field required"],
-        nomor_telepon: [(v) => !!v || "Field required"],
-        alamat: [(v) => !!v || "Field required"],
-        deposit: [(v) => !!v || "Field required"],
+        nama_instruktur: [(v) => !!v || "Field required"],
         tanggal_lahir: [(v) => !!v || "Field required"],
+        nomor_telepon: [(v) => !!v || "Field required"],
+        email: [(v) => !!v || "Field required"],
         status: [(v) => !!v || "Field required"],
         gender: [(v) => !!v || "Field required"],
-        email: [(v) => !!v || "Field required"],
-        username: [(v) => !!v || "Field required"],
         password: [(v) => !!v || "Field required"],
       },
       statusAktif: [
@@ -192,18 +178,18 @@ export default {
           disabled: true,
         },
         {
-          text: "Member",
+          text: "Instruktur",
           disabled: false,
         },
       ],
       headers: [
         {
-          text: "Nomor Member",
+          text: "Nomor Instruktur",
           value: "id",
         },
         {
-          text: "Nama Member",
-          value: "nama_member",
+          text: "Nama Instruktur",
+          value: "nama_instruktur",
         },
         {
           text: "Tanggal Lahir",
@@ -214,16 +200,16 @@ export default {
           value: "nomor_telepon",
         },
         {
-          text: "Deposit Uang",
-          value: "deposit_uang",
-        },
-        {
-          text: "Deposit Kelas",
-          value: "deposit_kelas",
-        },
-        {
           text: "Email",
           value: "email",
+        },
+        {
+          text: "Status",
+          value: "status",
+        },
+        {
+          text: "Gender",
+          value: "gender",
         },
         {
           text: "Action",
@@ -239,19 +225,19 @@ export default {
     },
   },
   mounted() {
-    this.getDataMember();
+    this.getDataInstruktur();
   },
   methods: {
     setForm() {
-      if (this.inputType !== "Tambah") {
-        this.updateMember();
+      if (this.inputType != "Tambah") {
+        this.updateInstruktur();
       } else {
-        this.submitMember();
+        this.submitInstruktur();
       }
     },
-    getDataMember() {
+    getDataInstruktur() {
       this.load = true;
-      var url = this.$api + "/member";
+      var url = this.$api + "/instruktur";
       this.$http
         .get(url, {
           headers: {
@@ -259,27 +245,24 @@ export default {
           },
         })
         .then((response) => {
-          this.members = response.data.data;
+          this.instrukturs = response.data.data;
           this.load = false;
         });
       this.load = true;
     },
-    submitMember() {
-      this.member.append("nama_member", this.form.nama_member);
-      this.member.append("nomor_telepon", this.form.nomor_telepon);
-      this.member.append("deposit_uang", this.form.deposit_uang);
-      this.member.append("deposit_kelas", this.form.deposit_kelas);
-      this.member.append("email", this.form.email);
-      this.member.append("username", this.form.username);
-      this.member.append("password", this.form.password);
-      this.member.append("tanggal_lahir", this.form.tanggal_lahir);
-      this.member.append("status", this.form.status);
-      this.member.append("gender", this.form.gender);
+    submitInstruktur() {
+      this.instruktur.append("nama_instruktur", this.form.nama_instruktur);
+      this.instruktur.append("tanggal_lahir", this.form.tanggal_lahir);
+      this.instruktur.append("nomor_telepon", this.form.nomor_telepon);
+      this.instruktur.append("email", this.form.email);
+      this.instruktur.append("status", this.form.status);
+      this.instruktur.append("gender", this.form.gender);
+      this.instruktur.append("password", this.form.password);
 
-      var url = this.$api + "/member";
+      var url = this.$api + "/instruktur";
       this.load = true;
       this.$http
-        .post(url, this.member, {
+        .post(url, this.instruktur, {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),
           },
@@ -290,31 +273,28 @@ export default {
           this.snackbar = true;
           this.load = true;
           this.close();
-          this.getDataMember();
+          this.getDataInstruktur();
           this.resetForm();
         })
         .catch(() => {
-          this.error_message = "Tambah Member gagal!";
+          this.error_message = "Tambah Instruktur gagal!";
           this.color = "red";
           this.dialogConfirmEdit = false;
           this.snackbar = true;
           this.load = false;
         });
     },
-    updateMember() {
+    updateInstruktur() {
       let newData = {
-        nama_member: this.form.nama_member,
-        nomor_telepon: this.form.nomor_telepon,
-        deposit_uang: this.form.deposit_uang,
-        deposit_kelas: this.form.deposit_kelas,
+        nama_instruktur: this.form.nama_instruktur,
         tanggal_lahir: this.form.tanggal_lahir,
-        status: this.form.status,
+        nomor_telepon: this.form.nomor_telepon,
         email: this.form.email,
+        status: this.form.status,
         gender: this.form.gender,
-        username: this.form.username,
         password: this.form.password,
       };
-      var url = this.$api + "/member/" + this.editId;
+      var url = this.$api + "/instruktur/" + this.editId;
       this.load = true;
       this.$http
         .put(url, newData, {
@@ -333,15 +313,15 @@ export default {
           this.inputType = "Tambah";
         })
         .catch(() => {
-          this.error_message = "Update Member gagal!" + this.editId;
-          this.color = "red";
+          this.error_message = "Update Instruktur gagal!";
+          this.color = "error";
           this.dialogConfirmEdit = false;
           this.snackbar = true;
           this.load = false;
         });
     },
     deleteData() {
-      var url = this.$api + "/member/" + this.deleteId;
+      var url = this.$api + "/instruktur/" + this.deleteId;
       this.$http
         .delete(url, {
           headers: {
@@ -371,7 +351,7 @@ export default {
       this.dialogConfirmEdit = false;
       this.inputType = "Tambah";
       (this.error = {
-        nama_member: false,
+        nama_instruktur: false,
         no_telp: false,
         alamat: false,
         deposit: false,
@@ -395,7 +375,7 @@ export default {
     editHandler(item) {
       this.inputType = "Ubah";
       this.editId = item.id;
-      this.form.nama_member = item.nama_member;
+      this.form.nama_instruktur = item.nama_instruktur;
       this.form.nomor_telepon = item.nomor_telepon;
       this.form.deposit_uang = item.deposit_uang;
       this.form.deposit_kelas = item.deposit_kelas;
@@ -409,18 +389,15 @@ export default {
     },
     resetPassword(item) {
       let newData = {
-        nama_member: item.nama_member,
-        nomor_telepon: item.nomor_telepon,
-        deposit_uang: item.deposit_uang,
-        depost_kelas: item.deposit_kelas,
+        nama_instruktur: item.nama_instruktur,
         tanggal_lahir: item.tanggal_lahir,
-        status: item.status,
+        nomor_telepon: item.nomor_telepon,
         email: item.email,
+        status: item.status,
         gender: item.gender,
-        username: item.username,
         password: item.password,
       };
-      var url = this.$api + "/member/" + item.id;
+      var url = this.$api + "/instruktur/" + item.id;
       this.load = true;
       this.$http
         .put(url, newData, {
@@ -452,15 +429,12 @@ export default {
     },
     resetForm() {
       this.form = {
-        nama_member: "",
-        nomor_telepon: "",
-        deposit_uang: "",
-        deposit_kelas: "",
+        nama_instruktur: "",
         tanggal_lahir: "",
-        status: "",
+        nomor_telepon: "",
         email: "",
+        status: "",
         gender: "",
-        username: "",
         password: "",
       };
     },
