@@ -54,6 +54,12 @@ const router = new VueRouter({
               name: 'presensi gym',
               meta: {title: 'presensi gym'},
               component: importViewComponent('PresensiGymPage')
+            },
+            {
+              path: '/presensiKelas',
+              name: 'presensi kelas',
+              meta: {title: 'presensi kelas'},
+              component: importViewComponent('PresensiKelasPage')
             }
           ]
     },

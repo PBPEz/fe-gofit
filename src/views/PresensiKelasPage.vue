@@ -13,6 +13,7 @@
                         <v-tab href="/instruktur" disabled>Instruktur</v-tab>
                         <v-tab href="/jadwal" disabled>Jadwal</v-tab>
                         <v-tab href="/presensiGym">Presensi Gym</v-tab>
+                        <v-tab href="/presensiKelas">Presensi Kelas</v-tab>
                         <v-tab @click="btnLogout">Logout</v-tab>
                     </v-tabs>
                 </template>
@@ -32,7 +33,7 @@
                             outlined style="margin-left: 15px; margin-right: 15px"></v-text-field>
                     </v-card>
                     <v-card style="margin-top: 20px">
-                        <v-data-table :headers="headers" :items="bookingGym" :search="search" :loading="load"
+                        <v-data-table :headers="headers" :items="bookingKelas" :search="search" :loading="load"
                             loading-text="Sedang mengambil data" no-data-text="Tidak ada Data">
                             <template v-slot:[`item.actions`]="{ item }">
                                 <v-btn v-if="cekTanggal(item)  == 1" color="error" class="mr-2" @click="printStruk(item)">
@@ -45,34 +46,9 @@
                                         mdi-printer-pos-check
                                     </v-icon>
                                 </v-btn>
-                                <v-btn v-if="cekTanggal(item) == 1" color="primary" class="mr-2" @click="presensiGym(item.id)">
-                                    <v-icon>
-                                        mdi-calendar-check
-                                    </v-icon>
-                                </v-btn>
-                                <v-btn v-if="cekTanggal(item) == 0" color="primary" class="mr-2" @click="presensiGym(item.id)" disabled>
-                                    <v-icon>
-                                        mdi-calendar-check
-                                    </v-icon>
-                                </v-btn>
                             </template>
                         </v-data-table>
                     </v-card>
-                    <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
-                        <v-card class="mx-auto my-12" max-width="374">
-                            <v-card-title>
-                                <div :style="!$vuetify.breakpoint.mobile ? 'display: flex;' : ''" style="width: 100%">
-                                    <span class="headline">Struk Presensi Gym</span>
-                                </div>
-                            </v-card-title>
-                            <hr />
-                            <v-card-text>
-                                <v-container style="width: 600px; ">
-                                    <v-card-title :items="bookingGym">Nama Member : {{ nama_member }}</v-card-title>
-                                </v-container>
-                            </v-card-text>
-                        </v-card>
-                    </v-dialog>
                 </v-container>
             </v-sheet>
         </v-card>
@@ -86,10 +62,11 @@ export default {
         return {
             editId: "",
             selectedDate: new Date().toISOString().substr(0, 10),
+            selectedTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             search: null,
             load: false,
             snackbar: false,
-            bookingGym: [],
+            bookingKelas: [],
             error_message: "",
             dialog: false,
             color: "",
@@ -98,16 +75,6 @@ export default {
             form: {
                 jam_presensi: "",
             },
-            statusAktif: [
-                {
-                    text: "Aktif",
-                    value: "aktif",
-                },
-                {
-                    text: "Tidak Aktif",
-                    value: "tidak aktif",
-                },
-            ],
             items: [
                 {
                     text: "...",
@@ -124,20 +91,28 @@ export default {
                     value: "id"
                 },
                 {
-                    text: "Nama Member",
+                    text: "Member",
                     value: "nama_member",
                 },
                 {
+                    text: "Kelas",
+                    value: "nama_kelas",
+                },
+                {
+                    text: "Instruktur",
+                    value: "nama_instruktur",
+                },
+                {
                     text: "Tanggal",
-                    value: "tanggal",
+                    value: "tanggal_kelas"
                 },
                 {
                     text: "Sesi",
-                    value: "sesi",
+                    value: "sesi"
                 },
                 {
                     text: "Jam Presensi",
-                    value: "jam_booking"
+                    value: "jam_presensi"
                 },
                 {
                     text: "Action",
@@ -153,73 +128,25 @@ export default {
         },
     },
     mounted() {
-        this.getDataBookingGyms();
+        this.getDataBookingKelas();
     },
     methods: {
-        getDataBookingGyms() {
+        getDataBookingKelas() {
             this.load = true;
-            var url = this.$api + "/bookingGym";
+            var url = this.$api + "/bookingKelas";
             this.$http
                 .get(url)
                 .then((response) => {
-                    this.bookingGym = response.data.data;
+                    this.bookingKelas = response.data.data;
                     this.load = false;
                 });
             this.load = true;
         },
         cekTanggal(item) {
-            if (item.tanggal == this.selectedDate)
+            if (item.tanggal_kelas == this.selectedDate)
                 return 1;
             else
                 return 0;
-        },
-        submitMember() {
-            this.member.append("nama_member", this.form.nama_member);
-            this.member.append("nomor_telepon", this.form.nomor_telepon);
-            this.member.append("deposit_uang", this.form.deposit_uang);
-            this.member.append("deposit_kelas", this.form.deposit_kelas);
-            this.member.append("email", this.form.email);
-            this.member.append("username", this.form.username);
-            this.member.append("password", this.form.password);
-            this.member.append("tanggal_lahir", this.form.tanggal_lahir);
-            this.member.append("status", this.form.status);
-            this.member.append("gender", this.form.gender);
-
-            var url = this.$api + "/member";
-            this.load = true;
-            this.$http
-                .post(url, this.member, {
-                    headers: {
-                        Authorization: "Bearer " + localStorage.getItem("token"),
-                    },
-                })
-                .then(() => {
-                    this.error_message = "Berhasil menambahkan data";
-                    this.color = "green";
-                    this.snackbar = true;
-                    this.load = true;
-                })
-                .catch(() => {
-                    this.error_message = "Tambah Member gagal!";
-                    this.color = "red";
-                    this.dialogConfirmEdit = false;
-                    this.snackbar = true;
-                    this.load = false;
-                });
-        },
-        printStruk(item) {
-            this.editId = item.id;
-
-            const doc = new jsPDF();
-
-            doc.text("Gofit", 10, 10);
-            doc.text("Jl.Centralpark No.10 Yogyakarta", 10, 20);
-            doc.text("STRUK PRESENSI KELAS", 10, 30);
-            doc.text(`Nomor Struk   : ${item.id}`, 10, 50);
-            doc.text(`Tanggal           : ${item.tanggal} ${item.jam_booking}`, 10, 60);
-            doc.text(`Member        : ${item.id_member} / ${item.nama_member}`, 10, 80);
-            doc.text(`Sesi              : ${item.sesi}`, 10, 90);
-            doc.save("struk_presensi_gym.pdf")
         },
         presensiGym(editId) {
             var url = this.$api + "/bookingGym/" + editId;
@@ -243,6 +170,46 @@ export default {
                     this.snackbar = true;
                     this.load = false;
                 });
+        },
+        printStruk(item) {
+
+            var url = this.$api + "/bookingKelas/" + item.id;
+            this.load = true;
+            this.$http
+                .put(url)
+                .then((response) => {
+                    this.snackbar = true;
+                    this.error_message = response.data.data;
+                    this.color = "green";
+                    this.snackbar = true;
+                    this.load = false;
+                    this.getDataBookingGyms();
+                    this.dialog = true;
+                    location.reload();
+                })
+                .catch(() => {
+                    this.error_message = "Cetak Struk gagal!" + item.id;
+                    this.color = "red";
+                    this.dialogConfirmEdit = false;
+                    this.snackbar = true;
+                    this.load = false;
+                });
+
+            const doc = new jsPDF();
+
+            doc.text("Gofit", 10, 10);
+            doc.text("Jl.Centralpark No.10 Yogyakarta", 10, 20);
+            doc.text("STRUK PRESENSI KELAS", 10, 30);
+            doc.text(`Nomor Struk   : ${item.id}`, 10, 50);
+            doc.text(`Tanggal           : ${item.tanggal} ${item.jam_presensi}`, 10, 60);
+            doc.text(`Member        : ${item.id_member} / ${item.nama_member}`, 10, 80);
+            doc.text(`Kelas              : ${item.nama_kelas}`, 10, 90);
+            doc.text(`Instruktur         : ${item.nama_instruktur}`, 10, 100);
+            doc.text(`Tarif             : ${item.harga}`,10,110);
+            doc.text(`Sisa Deposit  : ${item.deposit_uang}`,10,120);
+            doc.save("struk_presensi_gym.pdf");
+
+            location.reload();
         },
         deleteData() {
             var url = this.$api + "/member/" + this.deleteId;
