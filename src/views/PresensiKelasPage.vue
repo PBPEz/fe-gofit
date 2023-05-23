@@ -36,12 +36,13 @@
                         <v-data-table :headers="headers" :items="bookingKelas" :search="search" :loading="load"
                             loading-text="Sedang mengambil data" no-data-text="Tidak ada Data">
                             <template v-slot:[`item.actions`]="{ item }">
-                                <v-btn v-if="cekTanggal(item)  == 1" color="error" class="mr-2" @click="printStruk(item)">
+                                <v-btn v-if="cekTanggal(item) == 1" color="error" class="mr-2" @click="printStruk(item)">
                                     <v-icon>
                                         mdi-printer-pos-check
                                     </v-icon>
                                 </v-btn>
-                                <v-btn v-if="cekTanggal(item)  == 0" color="error" class="mr-2" @click="printStruk(item)" disabled>
+                                <v-btn v-if="cekTanggal(item) == 0" color="error" class="mr-2" @click="printStruk(item)"
+                                    disabled>
                                     <v-icon>
                                         mdi-printer-pos-check
                                     </v-icon>
@@ -62,7 +63,7 @@ export default {
         return {
             editId: "",
             selectedDate: new Date().toISOString().substr(0, 10),
-            selectedTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            selectedTime: new Date().toISOString().substr(12, 15),
             search: null,
             load: false,
             snackbar: false,
@@ -179,13 +180,30 @@ export default {
                 .put(url)
                 .then((response) => {
                     this.snackbar = true;
-                    this.error_message = response.data.data;
+                    this.error_message = response.data.message;
                     this.color = "green";
                     this.snackbar = true;
                     this.load = false;
-                    this.getDataBookingGyms();
-                    this.dialog = true;
+                    this.getDataBookingKelas();
+                    item = response.data.data;
                     location.reload();
+
+
+                    const doc = new jsPDF();
+
+                    doc.text("Gofit", 10, 10);
+                    doc.text("Jl.Centralpark No.10 Yogyakarta", 10, 20);
+                    doc.text("STRUK PRESENSI KELAS", 10, 30);
+                    doc.text(`Nomor Struk   : ${item.id}`, 10, 50);
+                    doc.text(`Tanggal           : ${item.tanggal} ${item.jam_presensi}`, 10, 60);
+                    doc.text(`Member        : ${item.id_member} / ${item.nama_member}`, 10, 80);
+                    doc.text(`Kelas              : ${item.nama_kelas}`, 10, 90);
+                    doc.text(`Instruktur         : ${item.nama_instruktur}`, 10, 100);
+                    doc.text(`Tarif             : ${item.harga}`, 10, 110);
+                    doc.text(`Sisa Deposit  : ${item.deposit_uang}`, 10, 120);
+                    doc.save("struk_presensi_gym.pdf");
+
+                    this.dialog = true;
                 })
                 .catch(() => {
                     this.error_message = "Cetak Struk gagal!" + item.id;
@@ -194,22 +212,6 @@ export default {
                     this.snackbar = true;
                     this.load = false;
                 });
-
-            const doc = new jsPDF();
-
-            doc.text("Gofit", 10, 10);
-            doc.text("Jl.Centralpark No.10 Yogyakarta", 10, 20);
-            doc.text("STRUK PRESENSI KELAS", 10, 30);
-            doc.text(`Nomor Struk   : ${item.id}`, 10, 50);
-            doc.text(`Tanggal           : ${item.tanggal} ${item.jam_presensi}`, 10, 60);
-            doc.text(`Member        : ${item.id_member} / ${item.nama_member}`, 10, 80);
-            doc.text(`Kelas              : ${item.nama_kelas}`, 10, 90);
-            doc.text(`Instruktur         : ${item.nama_instruktur}`, 10, 100);
-            doc.text(`Tarif             : ${item.harga}`,10,110);
-            doc.text(`Sisa Deposit  : ${item.deposit_uang}`,10,120);
-            doc.save("struk_presensi_gym.pdf");
-
-            location.reload();
         },
         deleteData() {
             var url = this.$api + "/member/" + this.deleteId;
