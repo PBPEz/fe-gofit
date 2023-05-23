@@ -35,12 +35,22 @@
                         <v-data-table :headers="headers" :items="bookingGym" :search="search" :loading="load"
                             loading-text="Sedang mengambil data" no-data-text="Tidak ada Data">
                             <template v-slot:[`item.actions`]="{ item }">
-                                <v-btn color="error" class="mr-2" @click="printStruk(item)">
+                                <v-btn v-if="cekTanggal(item)  == 1" color="error" class="mr-2" @click="printStruk(item)">
                                     <v-icon>
                                         mdi-printer-pos-check
                                     </v-icon>
                                 </v-btn>
-                                <v-btn color="primary" class="mr-2" @click="presensiGym(item.id)">
+                                <v-btn v-if="cekTanggal(item)  == 0" color="error" class="mr-2" @click="printStruk(item)" disabled>
+                                    <v-icon>
+                                        mdi-printer-pos-check
+                                    </v-icon>
+                                </v-btn>
+                                <v-btn v-if="cekTanggal(item) == 1" color="primary" class="mr-2" @click="presensiGym(item.id)">
+                                    <v-icon>
+                                        mdi-calendar-check
+                                    </v-icon>
+                                </v-btn>
+                                <v-btn v-if="cekTanggal(item) == 0" color="primary" class="mr-2" @click="presensiGym(item.id)" disabled>
                                     <v-icon>
                                         mdi-calendar-check
                                     </v-icon>
@@ -75,6 +85,7 @@ export default {
     data() {
         return {
             editId: "",
+            selectedDate: new Date().toISOString().substr(0, 10),
             search: null,
             load: false,
             snackbar: false,
@@ -143,6 +154,7 @@ export default {
     },
     mounted() {
         this.getDataBookingGyms();
+        this.checkSameDateData();
     },
     methods: {
         getDataBookingGyms() {
@@ -155,6 +167,12 @@ export default {
                     this.load = false;
                 });
             this.load = true;
+        },
+        cekTanggal(item) {
+            if (item.tanggal == this.selectedDate)
+                return 1;
+            else
+                return 0;
         },
         submitMember() {
             this.member.append("nama_member", this.form.nama_member);
@@ -190,19 +208,19 @@ export default {
                     this.load = false;
                 });
         },
-        printStruk(item){
+        printStruk(item) {
             this.editId = item.id;
 
             const doc = new jsPDF();
 
-            doc.text("Gofit",10,10);
-            doc.text("Jl.Centralpark No.10 Yogyakarta",10,20);
-            doc.text("STRUK PRESENSI KELAS",10,30);
-            doc.text(`Nomor Struk   : ${item.id}`,10,50);
-            doc.text(`Tanggal           : ${item.tanggal} ${item.jam_booking}`,10,60);
-            doc.text(`Member        : ${item.id_member} / ${item.nama_member}`,10,80);
-            doc.text(`Sesi              : ${item.sesi}`,10,90);
-            doc.save("gofit.pdf")
+            doc.text("Gofit", 10, 10);
+            doc.text("Jl.Centralpark No.10 Yogyakarta", 10, 20);
+            doc.text("STRUK PRESENSI KELAS", 10, 30);
+            doc.text(`Nomor Struk   : ${item.id}`, 10, 50);
+            doc.text(`Tanggal           : ${item.tanggal} ${item.jam_booking}`, 10, 60);
+            doc.text(`Member        : ${item.id_member} / ${item.nama_member}`, 10, 80);
+            doc.text(`Sesi              : ${item.sesi}`, 10, 90);
+            doc.save("struk_presensi_gym.pdf")
         },
         presensiGym(editId) {
             var url = this.$api + "/bookingGym/" + editId;
