@@ -60,7 +60,31 @@ const router = new VueRouter({
               name: 'presensi kelas',
               meta: {title: 'presensi kelas'},
               component: importViewComponent('PresensiKelasPage')
-            }
+            },
+            {
+              path: '/laporanGym',
+              name: 'laporan gym page',
+              meta: {title: 'laporan gym page'},
+              component: importViewComponent('LaporanGymPage')
+            },
+            {
+              path: '/laporanKelas',
+              name: 'laporan kelas page',
+              meta: {title: 'laporan kelas page'},
+              component: importViewComponent('LaporanKelasPage')
+            },
+            {
+              path: '/laporanInstruktur',
+              name: 'laporan instruktur page',
+              meta: {title: 'laporan instruktur page'},
+              component: importViewComponent('LaporanInstrukturPage')
+            },
+            {
+              path: '/laporanPendapatan',
+              name: 'laporan pendapatan page',
+              meta: {title: 'laporan pendapatan page'},
+              component: importViewComponent('LaporanPendapatanPage')
+            }             
           ]
     },
     {

@@ -64,6 +64,7 @@ export default {
             editId: "",
             selectedDate: new Date().toISOString().substr(0, 10),
             selectedTime: new Date().toISOString().substr(12, 15),
+            confirmBayar: false,
             search: null,
             load: false,
             snackbar: false,
@@ -185,12 +186,12 @@ export default {
                     this.snackbar = true;
                     this.load = false;
                     this.getDataBookingKelas();
-                    item = response.data.data;
+                    this.item = response.data.data;
                     location.reload();
 
-
+                    item.deposit_uang = item.deposit_uang - item.harga;
                     const doc = new jsPDF();
-
+                    
                     doc.text("Gofit", 10, 10);
                     doc.text("Jl.Centralpark No.10 Yogyakarta", 10, 20);
                     doc.text("STRUK PRESENSI KELAS", 10, 30);

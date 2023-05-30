@@ -12,6 +12,9 @@
             <v-tab href="/instruktur" disabled>Instruktur</v-tab>
             <v-tab href="/dashboard" disabled>Member</v-tab>
             <v-tab href="/login">Logout</v-tab>
+            <v-tab href="/presensiGym">Presensi Gym</v-tab>
+            <v-tab href="/presensiKelas">Presensi Kelas</v-tab>
+            <v-tab href="/">Log Out</v-tab>
           </v-tabs>
         </template>
       </v-app-bar>

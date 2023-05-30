@@ -13,6 +13,7 @@
             <v-tab href="/instruktur" disabled>Instruktur</v-tab>
             <v-tab href="/jadwal" disabled>Jadwal</v-tab>
             <v-tab href="/presensiGym">Presensi Gym</v-tab>
+            <v-tab href="/presensiKelas">Presensi Kelas</v-tab>
             <v-tab @click="btnLogout">Logout</v-tab>
           </v-tabs>
         </template>
