@@ -8,12 +8,14 @@
         </template>
         <template v-slot:extension>
           <v-tabs align-with-title>
-            <v-tab href="/jadwal">Jadwal</v-tab>
+            <v-tab href="/jadwal" disabled>Jadwal</v-tab>
+            <v-tab href="/presensiKelas" disabled>Presensi Kelas</v-tab>
+            <v-tab href="/laporanKelas">Laporan Kelas</v-tab>
+            <v-tab href="/laporanPendapatan">Laporan Pendapatan</v-tab>
+            <v-tab href="/laporanInstruktur">Laporan Instruktur</v-tab>
+            <v-tab href="/presensiGym" disabled>Presensi Gym</v-tab>
             <v-tab href="/instruktur" disabled>Instruktur</v-tab>
             <v-tab href="/dashboard" disabled>Member</v-tab>
-            <v-tab href="/login">Logout</v-tab>
-            <v-tab href="/presensiGym">Presensi Gym</v-tab>
-            <v-tab href="/presensiKelas">Presensi Kelas</v-tab>
             <v-tab href="/">Log Out</v-tab>
           </v-tabs>
         </template>

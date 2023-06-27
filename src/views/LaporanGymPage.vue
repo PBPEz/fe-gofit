@@ -10,6 +10,9 @@
                 <template v-slot:extension>
                     <v-tabs align-with-title>
                         <v-tab href="/laporanGym">Laporan Gym</v-tab>
+                        <v-tab href="/laporanInstruktur">Laporan Instruktur</v-tab>
+                        <v-tab href="/laporanPendapatan">Laporan Pendapatan</v-tab>
+                        <v-tab href="/laporanKelas">Laporan Kelas</v-tab>
                         <v-tab href="/dashboard">Member</v-tab>
                         <v-tab href="/instruktur" disabled>Instruktur</v-tab>
                         <v-tab href="/jadwal" disabled>Jadwal</v-tab>

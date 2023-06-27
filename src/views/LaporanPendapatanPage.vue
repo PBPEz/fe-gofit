@@ -9,13 +9,15 @@
                 </template>
                 <template v-slot:extension>
                     <v-tabs align-with-title>
+                        <v-tab href="/laporanPendapatan">Laporan Pendapatan</v-tab>
                         <v-tab href="/laporanKelas">Laporan Kelas</v-tab>
-                        <v-tab href="/dashboard">Member</v-tab>
-                        <v-tab href="/jadwal">Jadwal</v-tab>
                         <v-tab href="/laporanInstruktur">Laporan Instruktur</v-tab>
+                        <v-tab href="/laporanGym">Laporan Gym</v-tab>
+                        <v-tab href="/jadwal">Jadwal</v-tab>
+                        <v-tab href="/dashboard" disabled>Member</v-tab>
                         <v-tab href="/instruktur" disabled>Instruktur</v-tab>
-                        <v-tab href="/presensiGym">Presensi Gym</v-tab>
-                        <v-tab href="/presensiKelas">Presensi Kelas</v-tab>
+                        <v-tab href="/presensiGym" disabled>Presensi Gym</v-tab>
+                        <v-tab href="/presensiKelas" disabled>Presensi Kelas</v-tab>
                         <v-tab href="/">Logout</v-tab>
                     </v-tabs>
                 </template>
@@ -30,7 +32,7 @@
                             </v-col>
                             <div style="margin-top: 5px" class="ml-auto">
                                 <v-btn color="#00695C" dark @click="printData">Print</v-btn>
-                                <v-btn color="success" dark @click="generatePDFChart">Generate Chart</v-btn>
+                                <v-btn color="success" dark @click="generatePDFChart" style="margin-left: 30px; margin-right: 30px;">Generate Chart</v-btn>
                             </div>
                         </div>
                     </v-card>
